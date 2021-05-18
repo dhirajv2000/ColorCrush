@@ -1,0 +1,27 @@
+body {
+    background-color: turquoise;
+}
+
+.grid {
+    margin: auto;
+    padding-bottom: 10px;;
+    height: 548px;
+    width: 548px;
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.grid div{
+    height: 50px;
+    width: 50px;
+    border-style: ridge;
+    border-color: blueviolet;
+}
+
+#title{
+    padding-top: 10px;;
+    text-align: center;
+    font-family: 'Lobster', cursive;
+    color: #fffce8;
+    font-size: 1.5rem;
+}
