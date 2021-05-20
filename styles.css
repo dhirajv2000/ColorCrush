@@ -6,8 +6,8 @@ body {
 .grid {
     margin: auto;
     padding-bottom: 10px;;
-    height: 548px;
-    width: 548px;
+    height: 658px;
+    width: 658px;
     display: flex;
     flex-wrap: wrap;
 }
@@ -17,6 +17,7 @@ body {
     width: 50px;
     border-style: ridge;
     border-color: blueviolet;
+    border-width: 2.4px;
 }
 
 #title{

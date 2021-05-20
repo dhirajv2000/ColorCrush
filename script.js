@@ -1,7 +1,7 @@
 document.addEventListener("DOMContentLoaded", () => {
     const grid = document.querySelector('.grid');
     let squares = [];
-    const width = 10;
+    const width = 12;
     let score = 0;
     const scoreDisplay = document.getElementById('score')
 
@@ -16,117 +16,139 @@ document.addEventListener("DOMContentLoaded", () => {
             'lightsalmon'
         ]
         //score calculate
-        this.scoreCalculate = function() {
-            score += 10;
+        this.scoreCalculate = function(length) {
+            score += 10 * length;
             scoreDisplay.innerHTML = "Score: " + score;
         }
 
        //Creates grid accordin to width and fills colors 
-       this.createGrid = function() {
-            for (let i = 0; i < width*width; i++) {
-                const square = document.createElement('div');
-                square.setAttribute('id', i);
-                let randomColor = Math.floor(Math.random() * boxColors.length);
-                square.style.backgroundColor = boxColors[randomColor]
-                grid.appendChild(square);
-                squares.push(square);
+        this.createGrid = function () {
+            let squareNumber = 0;
+            for (let i = 0; i < width; i++) {
+                for(let j = 0; j < width; j++) {
+                    squares[i] = [];
+                }
+            }
+            for(let i = 0; i < width; i++) {
+                for(let j = 1; j <= width;   j++) {
+                    const square = document.createElement('div');
+                    square.setAttribute('id',squareNumber);
+                    squareNumber++;
+                    let randomColor = Math.floor(Math.random() * boxColors.length);
+                    square.style.backgroundColor = boxColors[randomColor];
+                    square.addEventListener('click', this.onClick)
+                    grid.appendChild(square);
+                    squares[i].push(square)
+                }
             }
         }
 
-        // Check for possible edgecases in rows
-        this.rowEdgeCase = function(squareBeingClicked, i) {
-            let column1 = [0, 10, 20, 30, 40, 50, 60, 70, 80, 90];
-            let column2 = [1, 11, 21, 31, 41, 51, 61, 71, 81, 91];
-            let column9 = [8, 18, 28, 38, 48, 58, 68, 78, 88, 98];
-            let column10 = [9, 19, 29, 39, 49, 59, 69, 79, 89, 99];
-            if((column1.includes(squareBeingClicked)) && (i == 0 || i == 1)) return true;
-            if((column2.includes(squareBeingClicked)) && (i == 0)) return true;
-            if((column9.includes(squareBeingClicked)) && (i == 2 )) return true;
-            if((column10.includes(squareBeingClicked)) && (i == 2 || i == 1)) return true;
-
+        //Finds index of square being clicked
+        this.findIndex = function(squareBeingClicked) {
+            let squareRowIndex = 0;
+            let squareColumnIndex = 0;
+            for(i = 0; i < squares.length; i++) {
+                if(squareBeingClicked <= squares[i][width-1].id) {
+                    squareRowIndex = i
+                    break;
+                }
+            }
+            for(i = 0; i < squares[squareRowIndex].length; i++) {
+                if(squares[squareRowIndex][i].id == squareBeingClicked){
+                    squareColumnIndex = i
+                    break;
+                }
+            }
+            return [squareRowIndex, squareColumnIndex];
         }
-
         //Checks fo rows
         this.checkRow = function(squareBeingClicked) {
-           let row = [
-                [squareBeingClicked, squareBeingClicked -1, squareBeingClicked -2], 
-                [squareBeingClicked, squareBeingClicked+1, squareBeingClicked-1],
-                [squareBeingClicked, squareBeingClicked+1, squareBeingClicked +2], 
-            ];
-           let clickedColor = squares[squareBeingClicked].style.backgroundColor;
-           const isBlank = squares[squareBeingClicked].style.backgroundColor === '';
-           for(i = 0; i<3; i++){
-            if(this.rowEdgeCase(squareBeingClicked, i)) continue;
-            if(row[i].every(index => squares[index].style.backgroundColor === clickedColor && !isBlank)){
-                    this.scoreCalculate();
-                    row[i].forEach(index => {
-                    squares[index].style.backgroundColor = '';
+            let indices = this.findIndex(squareBeingClicked);
+            const squareRowIndex = indices[0];
+            const squareColumnIndex = indices[1];
+            let clickedColor = squares[squareRowIndex][squareColumnIndex].style.backgroundColor;
+            const isBlank = squares[squareRowIndex][squareColumnIndex].style.backgroundColor === '';
+            let crushArray = []
+            for(i = squareColumnIndex; i < squares[squareRowIndex].length; i++) {
+                if(squares[squareRowIndex][i].style.backgroundColor === clickedColor && !isBlank) {
+                    crushArray.push(i);
+                }else break;
+            }
+            for(i = squareColumnIndex; i >=0; i--) {
+                if(squares[squareRowIndex][i].style.backgroundColor === clickedColor && !isBlank) {
+                    crushArray.push(i);
+                }else break;
+            }
+            if(crushArray.length > 3){
+                gridManager.scoreCalculate(crushArray.length);
+                crushArray.forEach(index => {
+                    squares[squareRowIndex][index].style.backgroundColor = '';
                 })
             }
-           }
+            this.moveDown();
         }
 
-        //Check for possible column edge cases
-        this.columnEdgeCase = function (squareBeingClicked, i) {
-            let row1 = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
-            let row2 = [10, 11, 12, 13, 14, 15, 16, 17, 18, 19];
-            let row10 = [90, 91, 92, 93, 94, 94, 95, 96, 97, 98, 99];
-            let row9 = [80, 81, 82, 83, 84, 85, 86, 87, 88 ,89];
-
-            if((row1.includes(squareBeingClicked) ) && (i == 1 || i == 2)) return true;
-            if((row2.includes(squareBeingClicked) ) && (i==2)) return true;
-            if((row9.includes(squareBeingClicked) ) && (i == 0 )) return true;
-            if((row10.includes(squareBeingClicked) ) && (i == 0 || i == 1)) return true;
-
-        }
 
         //Check for column
-        this.checkColumn = function (squareBeingClicked) {
-            let column = [
-                [squareBeingClicked, squareBeingClicked + width, squareBeingClicked + width * 2 ],
-                [squareBeingClicked, squareBeingClicked - width, squareBeingClicked + width ],
-                [squareBeingClicked, squareBeingClicked - width, squareBeingClicked - width * 2 ]
-            ]
-
-            let clickedColor = squares[squareBeingClicked].style.backgroundColor;
-            const isBlank = squares[squareBeingClicked].style.backgroundColor === '';
-            for(let i = 0; i<3; i++){   
-                if(this.columnEdgeCase(squareBeingClicked, i)) continue;            
-                if(column[i].every(index => squares[index].style.backgroundColor === clickedColor && !isBlank)) {
-                    this.scoreCalculate();
-                    column[i].forEach(index => {
-                    squares[index].style.backgroundColor = ''
-                    })
-                  }
-               }
+        this.checkColumn = function(squareBeingClicked) {
+            let indices = this.findIndex(squareBeingClicked);
+            const squareRowIndex = indices[0];
+            const squareColumnIndex = indices[1];
+            let clickedColor = squares[squareRowIndex][squareColumnIndex].style.backgroundColor;
+            const isBlank = squares[squareRowIndex][squareColumnIndex].style.backgroundColor === '';
+            let crushArray = []
+            for(i = squareRowIndex; i < squares[squareColumnIndex].length; i++) {
+                if(squares[i][squareColumnIndex].style.backgroundColor === clickedColor && !isBlank) {
+                    crushArray.push(i);
+                }else break;
+            }
+            for(i = squareRowIndex; i >=0; i--) {
+                if(squares[i][squareColumnIndex].style.backgroundColor === clickedColor && !isBlank) {
+                    crushArray.push(i);
+                }else break;
+            }
+            if(crushArray.length > 3){
+                gridManager.scoreCalculate(crushArray.length);
+                crushArray.forEach(index => {
+                    squares[index][squareColumnIndex].style.backgroundColor = '';
+                })
+            }
+            this.moveDown();
         }
+
 
         //Shuffles colors
         this.gridShuffle = function () {
-            for(i = 0; i < width * width; i++) {
-                const isBlank = squares[i].style.backgroundColor === '';
-                if(!isBlank) {
-                    let randomColor = Math.floor(Math.random() * boxColors.length);
-                    squares[i].style.backgroundColor = boxColors[randomColor];
+            for(i = 0; i < width; i++) {
+                for(j = 0; j < width; j++){
+                    const isBlank = squares[i][j].style.backgroundColor === '';
+                    if(!isBlank) {
+                        let randomColor = Math.floor(Math.random() * boxColors.length);
+                        squares[i][j].style.backgroundColor = boxColors[randomColor];
+                    }
                 }
             }
+        
         }
         //Brings down the blocks
         this.moveDown = function() {
-            for( i = 0; i<90; i++) {
-                if(squares[i + width].style.backgroundColor === '') {
-                    squares[i+width].style.backgroundColor = squares[i].style.backgroundColor;
-                    squares[i].style.backgroundColor = '';
-                }
+            for( i = 0; i < width - 1; i++) {
+              for( j =0; j < width; j++){
+                  if(squares[i+1][j].style.backgroundColor === '') {
+                      squares[i+1][j].style.backgroundColor = squares[i][j].style.backgroundColor;
+                      squares[i][j].style.backgroundColor = ''
+                  }
+              } 
             }
         }
         
+
+     
         //Refreshes grid
         this.gridRefresh = function () {
             grid.innerHTML = ""
             squares = [];
             gridManager.createGrid();
-            squares.forEach(square => square.addEventListener('click', gridManager.onClick));
             score = 0;
             scoreDisplay.innerHTML = "Score: " + 0;
             
@@ -137,7 +159,6 @@ document.addEventListener("DOMContentLoaded", () => {
             squareBeingClicked = parseInt(this.id);
             gridManager.checkRow(squareBeingClicked);
             gridManager.checkColumn(squareBeingClicked);
-            gridManager.moveDown();
         }
         
     }
@@ -146,7 +167,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
 const gridManager = new GridMananger();
 gridManager.createGrid();
-squares.forEach(square => square.addEventListener('click', gridManager.onClick));
 document.getElementById('restart-button').addEventListener('click', gridManager.gridRefresh);
 document.getElementById('shuffle-button').addEventListener('click', gridManager.gridShuffle);
 
@@ -159,22 +179,3 @@ window.setInterval(function() {
 
 
 })
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
