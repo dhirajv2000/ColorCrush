@@ -52,7 +52,52 @@ document.addEventListener("DOMContentLoaded", () => {
             let squareColumnIndex = squareBeingClicked % width;
             return [squareRowIndex, squareColumnIndex];
         }
-        //Checks fo rows
+
+        this.crushElements = function(crushArray) {
+            crushArray.forEach(element => {
+                let indices = this.findIndex(element);
+                let rowIndex = indices[0];
+                let colIndex = indices[1];
+                squares[rowIndex][colIndex].style.backgroundColor = '';
+            });
+        }
+
+        this.checkCrush = function(squareBeingClicked) {
+            let indices = this.findIndex(squareBeingClicked);
+            let crushArray = [];
+            const squareRowIndex = indices[0];
+            const squareColumnIndex = indices[1];
+            let clickedColor = squares[squareRowIndex][squareColumnIndex].style.backgroundColor;
+            const isBlank = squares[squareRowIndex][squareColumnIndex].style.backgroundColor === '';
+            if(isBlank) return;
+            let visited = []
+            for(let i = 0; i < width; i++){
+            visited.push([])
+            }
+            let stack = [];
+            stack.push(squareRowIndex + ',' + squareColumnIndex);
+            while(stack.length !=0) {
+                let x = stack.pop();
+                y = x.split(',')
+                let row = parseInt(y[0])
+                let col = parseInt(y[1])
+                if(row<0 || col<0 || row>=width || col>=width || visited[row][col] || squares[row][col].style.backgroundColor != clickedColor){
+                    continue;
+                }
+                crushArray.push(parseInt(squares[row][col].id));
+                visited[row][col] = true;
+                stack.push(row + "," + (col-1)); //go left
+                stack.push(row + "," + (col+1)); //go right
+                stack.push((row-1) + "," + col); //go up
+                stack.push((row+1) + "," + col); //go down
+            }
+
+            this.crushElements(crushArray);
+            this.scoreCalculate(crushArray.length)
+            this.moveDown();
+        }
+
+        /*//Checks fo rows
         this.checkRow = function(squareBeingClicked) {
             let indices = this.findIndex(squareBeingClicked);
             const squareRowIndex = indices[0];
@@ -78,10 +123,10 @@ document.addEventListener("DOMContentLoaded", () => {
                 })
             }
             this.moveDown();
-        }
+        }*/
 
 
-        //Check for column
+        /*//Check for column
         this.checkColumn = function(squareBeingClicked) {
             let indices = this.findIndex(squareBeingClicked);
             const squareRowIndex = indices[0];
@@ -106,7 +151,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 })
             }
             this.moveDown();
-        }
+        }*/
 
 
         //Shuffles colors
@@ -152,7 +197,7 @@ document.addEventListener("DOMContentLoaded", () => {
         //detects squares that are clicked
         this.onClick = function() {
             squareBeingClicked = parseInt(this.id);
-            gridManager.checkRow(squareBeingClicked);
+            gridManager.checkCrush(squareBeingClicked);
         }
         
     }
