@@ -1,13 +1,13 @@
 document.addEventListener("DOMContentLoaded", () => {
     const grid = document.querySelector('.grid');
     let squares = [];
-    const width = 12;
+    let width = 10;
     let score = 0;
     const scoreDisplay = document.getElementById('score')
 
     //GridManager constructor function that creates an object
     function GridMananger(){
-        this.width = width;
+
 
         //Stores the colors to be generated
         let boxColors = [
@@ -24,6 +24,9 @@ document.addEventListener("DOMContentLoaded", () => {
        //Creates grid accordin to width and fills colors 
         this.createGrid = function () {
             let squareNumber = 0;
+            let gridDimension = width * (50 + 4.8)
+            grid.style.width = gridDimension.toString() + 'px';
+            grid.style.height = gridDimension.toString() + 'px';
             for (let i = 0; i < width; i++) {
                 for(let j = 0; j < width; j++) {
                     squares[i] = [];
@@ -36,7 +39,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     squareNumber++;
                     let randomColor = Math.floor(Math.random() * boxColors.length);
                     square.style.backgroundColor = boxColors[randomColor];
-                    square.addEventListener('click', this.onClick)
+                    square.addEventListener('click', this.onClick);
                     grid.appendChild(square);
                     squares[i].push(square)
                 }
@@ -45,20 +48,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
         //Finds index of square being clicked
         this.findIndex = function(squareBeingClicked) {
-            let squareRowIndex = 0;
-            let squareColumnIndex = 0;
-            for(i = 0; i < squares.length; i++) {
-                if(squareBeingClicked <= squares[i][width-1].id) {
-                    squareRowIndex = i
-                    break;
-                }
-            }
-            for(i = 0; i < squares[squareRowIndex].length; i++) {
-                if(squares[squareRowIndex][i].id == squareBeingClicked){
-                    squareColumnIndex = i
-                    break;
-                }
-            }
+            let squareRowIndex = Math.floor(squareBeingClicked / width);
+            let squareColumnIndex = squareBeingClicked % width;
             return [squareRowIndex, squareColumnIndex];
         }
         //Checks fo rows
@@ -79,6 +70,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     crushArray.push(i);
                 }else break;
             }
+            this.checkColumn(squareBeingClicked);
             if(crushArray.length > 3){
                 gridManager.scoreCalculate(crushArray.length);
                 crushArray.forEach(index => {
@@ -142,12 +134,15 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         }
         
-
+        
      
         //Refreshes grid
         this.gridRefresh = function () {
             grid.innerHTML = ""
             squares = [];
+            let newWidth = prompt('Enter new width')
+            width = parseInt(newWidth);
+            console.log(typeof width)
             gridManager.createGrid();
             score = 0;
             scoreDisplay.innerHTML = "Score: " + 0;
@@ -158,7 +153,6 @@ document.addEventListener("DOMContentLoaded", () => {
         this.onClick = function() {
             squareBeingClicked = parseInt(this.id);
             gridManager.checkRow(squareBeingClicked);
-            gridManager.checkColumn(squareBeingClicked);
         }
         
     }
