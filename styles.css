@@ -6,8 +6,7 @@ body {
 .grid {
     margin: auto;
     padding-bottom: 10px;;
-    height: 658px;
-    width: 658px;
+  
     display: flex;
     flex-wrap: wrap;
 }
