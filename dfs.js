@@ -3,6 +3,8 @@ function DFS(grid) {
     let count = 0
     let h = grid.length;
     let l = grid.length;
+    let rowList = [];
+    let colList = [];
     let visited = []
     for(let i = 0; i < h; i++){
         visited.push([])
@@ -29,10 +31,12 @@ function DFS(grid) {
         stack.push((row-1) + "," + col); //go up
         stack.push((row+1) + "," + col); //go down
     } else if(row == 3) {
+        colList.push(col)
         stack.push(row + "," + (col-1)); //go left
         stack.push(row + "," + (col+1)); //go right
 
     } else if(col == 3) {
+        rowList.push(row);
         stack.push((row-1) + "," + col); //go up
         stack.push((row+1) + "," + col); //go down
     }
@@ -40,7 +44,8 @@ function DFS(grid) {
       
       
     }
-    console.log(count)
+    console.log(colList)
+    console.log(rowList)
     }
     
     
@@ -49,4 +54,4 @@ function DFS(grid) {
                  [0,0,0,1],
                  [0,0,1,1]]
     DFS(grid);
-    console.log(crushArray)
+ 

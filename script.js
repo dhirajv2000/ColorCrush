@@ -65,6 +65,8 @@ document.addEventListener("DOMContentLoaded", () => {
         this.checkCrush = function(squareBeingClicked) {
             let indices = this.findIndex(squareBeingClicked);
             let crushArray = [];
+            let rowArray = [];
+            let colArray =[]
             const squareRowIndex = indices[0];
             const squareColumnIndex = indices[1];
             let clickedColor = squares[squareRowIndex][squareColumnIndex].style.backgroundColor;
@@ -92,6 +94,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     stack.push((row-1) + "," + col); //go up
                     stack.push((row+1) + "," + col); //go down
                 } else if(row == squareRowIndex) {
+                    rowArray.push(parseInt(squares[row][col].id));
                     stack.push(row + "," + (col-1)); //go left
                     stack.push(row + "," + (col+1)); //go right
                 } else if (col == squareColumnIndex) {
@@ -101,10 +104,16 @@ document.addEventListener("DOMContentLoaded", () => {
           
               
             }
-
-            this.crushElements(crushArray);
+            colArray = crushArray.filter(x => !rowArray.includes(x));
+            rowArray.push(squareBeingClicked);
+            if(rowArray.length >= 3) {
+                this.crushElements(rowArray);
+            }
+            if(colArray.length >= 3) {
+                this.crushElements(colArray)
+            }
             this.scoreCalculate(crushArray.length)
-            //this.moveDown();
+            this.moveDown();
         }
 
         /*//Checks fo rows
@@ -221,7 +230,7 @@ document.getElementById('shuffle-button').addEventListener('click', gridManager.
 
 window.setInterval(function() {
 
-    //gridManager.moveDown();
+    gridManager.moveDown();
         
 }, 200)
 
