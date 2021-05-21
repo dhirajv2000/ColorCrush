@@ -86,15 +86,25 @@ document.addEventListener("DOMContentLoaded", () => {
                 }
                 crushArray.push(parseInt(squares[row][col].id));
                 visited[row][col] = true;
-                stack.push(row + "," + (col-1)); //go left
-                stack.push(row + "," + (col+1)); //go right
-                stack.push((row-1) + "," + col); //go up
-                stack.push((row+1) + "," + col); //go down
+                if(row == squareRowIndex && col == squareColumnIndex) {
+                    stack.push(row + "," + (col-1)); //go left
+                    stack.push(row + "," + (col+1)); //go right
+                    stack.push((row-1) + "," + col); //go up
+                    stack.push((row+1) + "," + col); //go down
+                } else if(row == squareRowIndex) {
+                    stack.push(row + "," + (col-1)); //go left
+                    stack.push(row + "," + (col+1)); //go right
+                } else if (col == squareColumnIndex) {
+                    stack.push((row-1) + "," + col); //go up
+                    stack.push((row+1) + "," + col); //go down
+                }
+          
+              
             }
 
             this.crushElements(crushArray);
             this.scoreCalculate(crushArray.length)
-            this.moveDown();
+            //this.moveDown();
         }
 
         /*//Checks fo rows
@@ -211,7 +221,7 @@ document.getElementById('shuffle-button').addEventListener('click', gridManager.
 
 window.setInterval(function() {
 
-    gridManager.moveDown();
+    //gridManager.moveDown();
         
 }, 200)
 
