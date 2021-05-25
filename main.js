@@ -4,17 +4,15 @@ document.addEventListener("DOMContentLoaded", () => {
    
    //Creating a instance of gridManager
    const gridManager = new GridMananger(defaultBoardWidth);
-   gridManager.createGrid();
 
-   //Inherting properties of score from rules
+   //Inherting properties of score to rules
    Rules.prototype = Object.create(Score.prototype);
    Rules.prototype.constructor = Rules;
 
    //Creating an instance of rules
    const rules = new Rules(gridManager);
+   rules.newGame();
 
-
-   addSquareEventListener(); // adds event listener to all the squares
 
    //Click listeners
    document.getElementById('restart-button').addEventListener('click', gridRefresh);
@@ -23,28 +21,12 @@ document.addEventListener("DOMContentLoaded", () => {
    //Driver functions
    function gridRefresh () {
       gridManager.gridRefresh();
-      addSquareEventListener();
+      rules.newGame()
    }
 
+   //shuffles the game
    function gridShuffle () {
       gridManager.gridShuffle();
    }
-
-   function onGridClick () {
-      rules.onClick(this.id);
-   }
-
-   function addSquareEventListener () {
-      for(let i = 0; i < gridManager.width; i++){
-         gridManager.squares[i].forEach(square => square.addEventListener('click', onGridClick))
-      }
-   }
-
-   
-   window.setInterval(function() {
-
-      gridManager.moveDown();
-          
-  }, 200)
 
 })

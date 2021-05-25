@@ -1,6 +1,7 @@
 function Rules (gridManager) {
 
     this.squareBeingClicked;
+    let self = this;
 
     //Finds index of square being clicked
     this.findIndex = function(squareBeingClicked) {
@@ -69,22 +70,29 @@ function Rules (gridManager) {
             if(colArray.length >=2){
                 this.crushElements(colArray)
                 this.scoreCalculate(colArray.length)
-                gridManager.moveDown();
+                gridManager.startMoveDown();
+                return
+            }else{
+                gridManager.startMoveDown();
+                colArray.push(this.squareBeingClicked)
                 return
             }
         }
         if(colArray.length >= 3) {
             this.crushElements(colArray)
             this.scoreCalculate(colArray.length)
-            gridManager.moveDown();
+            gridManager.startMoveDown();
         }
         
     }
-
+    this.newGame = function () {
+        gridManager.createGrid(this.onClick);
+        this.scoreReset();
+    }
 
     //detects squares that are clicked
-    this.onClick = function(id) {
-        this.squareBeingClicked = parseInt(id);
-        this.checkCrush();
+    this.onClick = function() {
+        self.squareBeingClicked = parseInt(this.id);
+        self.checkCrush();
     }
 }
