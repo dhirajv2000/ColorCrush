@@ -1,5 +1,5 @@
 //Maintains the grid squares
-function GridMananger (width) {
+function GridMananger(width) {
     const grid = document.querySelector('.grid');
     this.squares = [];
     this.width = width;
@@ -19,11 +19,11 @@ function GridMananger (width) {
         let gridDimension = this.width * (50 + 4.8)
         grid.style.width = gridDimension.toString() + 'px';
         grid.style.height = gridDimension.toString() + 'px';
-        for(let i = 0; i < this.width; i++) {
+        for (let i = 0; i < this.width; i++) {
             this.squares.push([])
-            for(let j = 1; j <= this.width;   j++) {
+            for (let j = 1; j <= this.width; j++) {
                 const square = document.createElement('div');
-                square.setAttribute('id',squareNumber);
+                square.setAttribute('id', squareNumber);
                 squareNumber++;
                 let randomColor = Math.floor(Math.random() * boxColors.length);
                 square.style.backgroundColor = boxColors[randomColor];
@@ -35,20 +35,18 @@ function GridMananger (width) {
     }
 
     //Brings down the blocks
-    this.moveDown = function() {
-        var numberOfSwaps = 0;
-        for( i = 0; i < this.width - 1; i++) {
-            for( j =0; j < this.width; j++){
-                if(this.squares[i+1][j].style.backgroundColor === '' && this.squares[i][j].style.backgroundColor !='') {
-                    numberOfSwaps = numberOfSwaps + 1
-                    this.squares[i+1][j].style.backgroundColor = this.squares[i][j].style.backgroundColor;
+    this.moveDown = function () {
+        let hasMoved = false;
+        for (i = 0; i < this.width - 1; i++) {
+            for (j = 0; j < this.width; j++) {
+                if (this.squares[i + 1][j].style.backgroundColor === '' && this.squares[i][j].style.backgroundColor != '') {
+                    hasMoved = true;
+                    this.squares[i + 1][j].style.backgroundColor = this.squares[i][j].style.backgroundColor;
                     this.squares[i][j].style.backgroundColor = ''
                 }
-            } 
-          }
-        if (numberOfSwaps == 0 ){
-            this.stopMoveDown();
-        } 
+            }
+        }
+        if (hasMoved) this.stopMoveDown;
     }
 
     //starts the move down function
@@ -59,13 +57,13 @@ function GridMananger (width) {
     }
 
     //stops the move down function
-    this.stopMoveDown= function () {
+    this.stopMoveDown = function () {
         clearInterval(timer)
     }
 
 
-     //Refreshes grid
-     this.gridRefresh = function () {
+    //Refreshes grid
+    this.gridRefresh = function () {
         grid.innerHTML = ""
         this.squares = [];
         let newWidth = prompt('Enter new width')
@@ -74,22 +72,17 @@ function GridMananger (width) {
 
     //shuffles grid    
     this.gridShuffle = function () {
-        for(let i = 0; i < this.width; i++) {
-            for(let j = 0; j < this.width; j++){
+        for (let i = 0; i < this.width; i++) {
+            for (let j = 0; j < this.width; j++) {
                 const isBlank = this.squares[i][j].style.backgroundColor === '';
-                if(!isBlank) {
+                if (!isBlank) {
                     let randomColor = Math.floor(Math.random() * boxColors.length);
                     this.squares[i][j].style.backgroundColor = boxColors[randomColor];
                 }
             }
         }
-    
+
     }
 
 
 }
-
-   
-   
-
-

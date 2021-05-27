@@ -1,7 +1,7 @@
 document.addEventListener("DOMContentLoaded", () => {
 
    let defaultBoardWidth = 10; //Sets default width of the board
-   
+
    //Creating a instance of gridManager
    const gridManager = new GridMananger(defaultBoardWidth);
 
@@ -19,13 +19,13 @@ document.addEventListener("DOMContentLoaded", () => {
    document.getElementById('shuffle-button').addEventListener('click', gridShuffle);
 
    //Driver functions
-   function gridRefresh () {
+   function gridRefresh() {
       gridManager.gridRefresh();
       rules.newGame()
    }
 
    //shuffles the game
-   function gridShuffle () {
+   function gridShuffle() {
       gridManager.gridShuffle();
    }
 

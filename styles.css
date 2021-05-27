@@ -5,13 +5,14 @@ body {
 
 .grid {
     margin: auto;
-    padding-bottom: 10px;;
-  
+    padding-bottom: 10px;
+    ;
+
     display: flex;
     flex-wrap: wrap;
 }
 
-.grid div{
+.grid div {
     height: 50px;
     width: 50px;
     border-style: ridge;
@@ -19,8 +20,8 @@ body {
     border-width: 2.4px;
 }
 
-#title{
-    padding-top: 10px;;
+#title {
+    padding-top: 10px;
     text-align: center;
     font-family: 'Lobster', cursive;
     color: #fffce8;
@@ -28,7 +29,7 @@ body {
 }
 
 .button {
-    background-color: #4CAF50; 
+    background-color: #4CAF50;
     border: none;
     color: white;
     padding: 16px 32px;
@@ -41,12 +42,14 @@ body {
     cursor: pointer;
     border-radius: 50%;
     font-family: 'Lobster', cursive;
- }
+}
 
 .button4 {
     background-color: rgb(255, 255, 255);
     color: black;
     border: 2px solid #e7e7e7;
-  }
-  
-.button4:hover {background-color: #e7e7e7;}
+}
+
+.button4:hover {
+    background-color: #e7e7e7;
+}
